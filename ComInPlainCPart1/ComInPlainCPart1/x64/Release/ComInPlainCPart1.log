@@ -1,0 +1,20 @@
+﻿  IExample.c
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(92,52): warning C4142: 'FactoryAddRef': benign redefinition of type
+  C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(11,27):
+  see declaration of 'FactoryAddRef'
+  
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(96,53): warning C4142: 'FactoryRelease': benign redefinition of type
+  C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(12,27):
+  see declaration of 'FactoryRelease'
+  
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(112,35): warning C4090: '=': different 'const' qualifiers
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(113,27): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(114,40): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(116,28): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(152,44): warning C4090: '=': different 'const' qualifiers
+     Creating library C:\Users\x\source\repos\ComInPlainCPart1\x64\Release\IExample.lib and object C:\Users\x\source\repos\ComInPlainCPart1\x64\Release\IExample.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 13 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  ComInPlainCPart1.vcxproj -> C:\Users\x\source\repos\ComInPlainCPart1\x64\Release\IExample.dll

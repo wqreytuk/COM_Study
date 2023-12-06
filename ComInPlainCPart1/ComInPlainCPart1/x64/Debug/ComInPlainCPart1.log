@@ -1,0 +1,6 @@
+﻿  IExample.c
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(111,35): warning C4090: '=': different 'const' qualifiers
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(113,40): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(115,28): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\source\repos\ComInPlainCPart1\ComInPlainCPart1\IExample.c(151,44): warning C4090: '=': different 'const' qualifiers
+  ComInPlainCPart1.vcxproj -> C:\Users\x\source\repos\ComInPlainCPart1\x64\Debug\IExample.dll
