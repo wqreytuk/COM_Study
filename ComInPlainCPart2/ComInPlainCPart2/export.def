@@ -1,0 +1,4 @@
+LIBRARY IExample
+EXPORTS
+DllCanUnloadNow		PRIVATE
+DllGetClassObject	PRIVATE
