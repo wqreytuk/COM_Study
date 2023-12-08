@@ -1,4 +1,5 @@
 ﻿#include <Windows.h>
+#include <stdio.h>
 
 int main()
 {
@@ -18,6 +19,19 @@ int main()
 
 	DWORD len;
 	BSTR strPtr;
-	char ansiString = "Some String";
-	len = MultiByteToWideChar(CP_ACP, 0, ansiString, -1, 0, 0);
+	char ansiString[] = "Some String";
+
+
+	// SysAllocStringLen会分配4+(len+1)*2字节的内存，把terminating 0也给该考虑上了
+	strPtr = SysAllocStringLen(0, lstrlenA(ansiString));
+
+	// 然后复制过去
+	// 第四和第六个参数算的都是字符数量，而不是字节数
+	MultiByteToWideChar(CP_ACP, 0, ansiString, lstrlenA(ansiString), strPtr, lstrlenA(ansiString));
+
+	printf("character number: %d\n", SysStringLen(strPtr));
+	printf("bytes number: %d\n", SysStringByteLen(strPtr));
+	printf("bytes number: %d\n", *(PDWORD)(((PBYTE)strPtr) - 4));
+	return 0;
+
 }

@@ -1,0 +1,18 @@
+﻿  IExample.c
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(29,75): warning C4113: 'HRESULT (__cdecl *)(LPVOID,char *)' differs in parameter lists from 'HRESULT (__cdecl *)(IExample *,UINT *)'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(29,85): warning C4113: 'HRESULT (__cdecl *)(LPVOID,char *,size_t)' differs in parameter lists from 'HRESULT (__cdecl *)(IExample *,UINT,LCID,ITypeInfo **)'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(92,52): warning C4142: 'FactoryAddRef': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(11,27):
+  see declaration of 'FactoryAddRef'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(96,53): warning C4142: 'FactoryRelease': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(12,27):
+  see declaration of 'FactoryRelease'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(112,35): warning C4090: '=': different 'const' qualifiers
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(113,27): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(114,40): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(116,28): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(152,44): warning C4090: '=': different 'const' qualifiers
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Users\x\COM_Study\ComInPlainCPart2\x64\Debug\ComInPlainCPart2.exe : fatal error LNK1120: 1 unresolved externals

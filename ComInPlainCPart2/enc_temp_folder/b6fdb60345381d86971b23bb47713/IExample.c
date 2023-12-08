@@ -14,9 +14,8 @@ HRESULT STDMETHODCALLTYPE FactoryCreateInstance(LPVOID, LPVOID, REFIID, LPVOID*)
 HRESULT STDMETHODCALLTYPE FactoryLockServer(LPVOID, BOOL);
 
 
-
-HRESULT STDMETHODCALLTYPE SetString(LPVOID, BSTR);
-HRESULT STDMETHODCALLTYPE GetString(LPVOID, BSTR*);
+HRESULT STDMETHODCALLTYPE SetString(LPVOID, char*);
+HRESULT STDMETHODCALLTYPE GetString(LPVOID, char*, size_t);
 
 
 static const IClassFactoryVtbl IClassFactory_Vtbl = {
@@ -31,35 +30,28 @@ static const IExampleVtbl IExample_Vtbl = { QueryInterface,AddRef,Release,SetStr
 static DWORD OutstandingObjects;
 static DWORD LockCount;
 
-// 修改为自动变量
 typedef struct {
 	IExampleVtbl* lpVtbl;
 	DWORD count;
-	BSTR string;
+	char buffer[80];
 }IExampleForDll, * IExamplePtrForDll;
 
 
-HRESULT STDMETHODCALLTYPE SetString(LPVOID this, BSTR str) {
-	if (!str)
-		return E_POINTER;
-	// 如果原来string成员变量里面有东西，就先释放掉
-	if (((IExamplePtrForDll)this)->string)
-		SysFreeString(((IExamplePtrForDll)this)->string);
-
-	if (!(((IExamplePtrForDll)this)->string = SysAllocStringLen(str, SysStringLen(str))))
-		return TBSIMP_E_OUT_OF_MEMORY;
-
+HRESULT STDMETHODCALLTYPE SetString(LPVOID this, char* buffer) {
+	size_t i = lstrlenA(buffer);
+	if (i > 79)
+		i = 79;
+	memcpy(((IExamplePtrForDll)this)->buffer, buffer, i);
+	((IExamplePtrForDll)this)->buffer[i] = 0;
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE GetString(LPVOID this, BSTR strPtr) {
-	if (!strPtr)
-		return E_POINTER;
-	
-
-	if (!(*strPtr = SysAllocStringLen(((IExamplePtrForDll)this)->string, SysStringLen(((IExamplePtrForDll)this)->string))))
-		return TBSIMP_E_OUT_OF_MEMORY;
-
+HRESULT STDMETHODCALLTYPE GetString(LPVOID this, char* buffer, size_t size) {
+	size_t i = lstrlenA(((IExamplePtrForDll)this)->buffer);
+	if (size > i)
+		size = i;
+	memcpy(buffer, ((IExamplePtrForDll)this)->buffer, size);
+	buffer[size] = 0;
 	return S_OK;
 }
 
@@ -79,10 +71,6 @@ HRESULT STDMETHODCALLTYPE AddRef(LPVOID this) {
 HRESULT STDMETHODCALLTYPE Release(LPVOID this) {
 	((IExamplePtrForDll)this)->count--;
 	if (((IExamplePtrForDll)this)->count == 0) {
-		// 释放成员变量
-		if (((IExamplePtrForDll)this)->string)
-			SysFreeString(((IExamplePtrForDll)this)->string);
-
 		GlobalFree(this);
 		InterlockedDecrement(&OutstandingObjects);
 		return S_OK;
@@ -121,8 +109,6 @@ HRESULT STDMETHODCALLTYPE FactoryCreateInstance(LPVOID this, LPVOID pUnkOuter, R
 		hr = E_OUTOFMEMORY;
 	}
 	else {
-		// 初始化成员变量
-		((IExamplePtrForDll)this)->string = 0;
 		example->lpVtbl = &IExample_Vtbl;
 		example->lpVtbl->AddRef(example);
 		hr = example->lpVtbl->QueryInterface(example, riid, ppv);
