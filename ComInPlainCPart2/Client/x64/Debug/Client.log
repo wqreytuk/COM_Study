@@ -1,2 +1,9 @@
 ﻿  Client.c
-  Client.vcxproj -> C:\Users\x\source\repos\ComInPlainCPart1\x64\Debug\Client.exe
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(23,18): warning C4133: 'function': incompatible types - from 'unsigned short [24]' to 'LPCSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(23,46): warning C4133: 'function': incompatible types - from 'unsigned short [23]' to 'LPCSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(31,19): warning C4133: 'function': incompatible types - from 'unsigned short [19]' to 'LPCSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(31,42): warning C4133: 'function': incompatible types - from 'unsigned short [21]' to 'LPCSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(56,17): warning C4133: 'function': incompatible types - from 'unsigned short [21]' to 'LPCSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(56,42): warning C4133: 'function': incompatible types - from 'unsigned short [19]' to 'LPCSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(44,11): warning C4047: 'initializing': 'BSTR *' differs in levels of indirection from 'DWORD64 *'
+  Client.vcxproj -> C:\Users\x\COM_Study\ComInPlainCPart2\x64\Debug\Client.exe

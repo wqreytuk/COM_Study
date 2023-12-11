@@ -60,16 +60,25 @@ static void cleanup(void)
 		// Delete our CLSID key and everything under it
 		if (!RegOpenKeyEx(rootKey, CLSID_Str, 0, KEY_ALL_ACCESS, &hKey))
 		{
-			if (!RegOpenKeyEx(hKey, &buffer[0], 0, KEY_ALL_ACCESS, &hKey2))
+			if (!RegOpenKeyEx(hKey, buffer, 0, KEY_ALL_ACCESS, &hKey2))
 			{
 				RegDeleteKey(hKey2, InprocServer32Name);
 
 				RegDeleteKey(hKey2, ProgIDName);
 
 				RegCloseKey(hKey2);
-				RegDeleteKey(hKey, &buffer[0]);
+				RegDeleteKey(hKey, buffer);
 			}
 
+			RegCloseKey(hKey);
+		}
+
+		// 删除OurProgID
+		if (!RegOpenKeyEx(rootKey, OurProgID, 0, KEY_ALL_ACCESS, &hKey))
+		{
+			RegDeleteKey(hKey, CLSID_Str);
+			RegDeleteKey(rootKey, OurProgID);
+		
 			RegCloseKey(hKey);
 		}
 
@@ -125,8 +134,20 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 		// Open "HKEY_LOCAL_MACHINE\Software\Classes"
 		if (!RegOpenKeyEx(HKEY_LOCAL_MACHINE, ClassKeyName, 0, KEY_WRITE, &rootKey))
 		{
+			// 需要在HKEY_LOCAL_MACHINE\Software\Classes下创建一个以我们的ProgID命名的Key
+			if (!RegCreateKeyEx(rootKey, OurProgID, 0, 0, REG_OPTION_NON_VOLATILE, KEY_WRITE, 0, &hKey2, &disposition)) {
+				stringFromCLSID(buffer, CLSID_IExample);
+				disposition = RegSetValueEx(hKey2, 0, 0, REG_SZ, (const BYTE*)ObjectDescription, 2 * (lstrlen(ObjectDescription) + 1));
+				// 还需要再在里面创建一个Key，键名为CLSID
+				if (!disposition && !RegCreateKeyEx(hKey2, CLSID_Str, 0, 0, REG_OPTION_NON_VOLATILE, KEY_WRITE, 0, &hkExtra, &disposition)) {
+					disposition = RegSetValueEx(hkExtra, 0, 0, REG_SZ, (const BYTE*)buffer, 2 * (lstrlen(buffer) + 1));
+					RegCloseKey(hkExtra);
+				}
+				RegCloseKey(hKey2);
+			}
+
 			// Open "HKEY_LOCAL_MACHINE\Software\Classes\CLSID"
-			if (!RegOpenKeyEx(rootKey, CLSID_Str, 0, KEY_ALL_ACCESS, &hKey))
+			if (!disposition && !RegOpenKeyEx(rootKey, CLSID_Str, 0, KEY_ALL_ACCESS, &hKey))
 			{
 				// 将IExample COM的clsid转换成字符串
 				stringFromCLSID(buffer, CLSID_IExample);
@@ -144,7 +165,7 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 						if (!RegSetValueEx(hkExtra, 0, 0, REG_SZ, (const BYTE*)filename, 2*(lstrlen(filename) + 1)))
 						{
 							// 再添加一个值 ThreadingModel，值为 both
-							disposition = RegSetValueEx(hkExtra, ThreadingModel, 0, REG_SZ, (const BYTE*)BothStr, sizeof(BothStr));
+							disposition = RegSetValueEx(hkExtra, ThreadingModel, 0, REG_SZ, (const BYTE*)BothStr, 2 * (lstrlen(BothStr) + 1));
 						}
 
 						// Close all keys we opened/created.
@@ -154,7 +175,7 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 						// 创建ProgID
 						if (!disposition && !RegCreateKeyEx(hKey2, ProgIDName, 0, 0, REG_OPTION_NON_VOLATILE, KEY_WRITE, 0, &hkExtra, &disposition)) {
 							// 给ProgID赋值
-							if (!RegSetValueEx(hkExtra, 0, 0, REG_SZ, (const BYTE*)OurProgID, sizeof(OurProgID)))
+							if (!RegSetValueEx(hkExtra, 0, 0, REG_SZ, (const BYTE*)OurProgID, 2 * (lstrlen(OurProgID) + 1)))
 								result = 0;
 						}
 						RegCloseKey(hkExtra);
@@ -177,12 +198,10 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 			
 			// 通过\\截取目录路径
 			str = filename + lstrlen(filename);
-			while (str > filename && str[lstrlen(str) - 1] != L'\\') str--;
+			while (str > filename && *(str-1) != L'\\') str--;
 			lstrcpy(str, TypeLibName);
 			// 现在filename就是TLB文件的完整路径了
-			if (!(result = LoadTypeLib(filename, &pTypeLib))) {
-				// 这个函数会自动为我们创建必要的注册表键和值
-				result = RegisterTypeLib(pTypeLib, filename, 0);
+			if (SUCCEEDED(result = LoadTypeLibEx(filename, REGKIND_REGISTER, &pTypeLib))) {
 				// 这个对象用完要记得释放
 				pTypeLib->lpVtbl->Release(pTypeLib);
 			}
@@ -200,5 +219,5 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 		}
 	}
 
-	return(0);
+	return 0;
 }

@@ -10,6 +10,11 @@ HRESULT STDMETHODCALLTYPE QueryInterface(LPVOID, REFIID, LPVOID*);
 HRESULT STDMETHODCALLTYPE AddRef(LPVOID);
 HRESULT STDMETHODCALLTYPE Release(LPVOID);
 
+HRESULT STDMETHODCALLTYPE GetTypeInfoCount(LPVOID this, UINT* pCount);
+HRESULT STDMETHODCALLTYPE GetTypeInfo(LPVOID this, UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo);
+HRESULT STDMETHODCALLTYPE GetIDsOfNames(LPVOID this, REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId);
+HRESULT STDMETHODCALLTYPE Invoke(LPVOID this, DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult, EXCEPINFO* pExcepInfo, UINT* puArgErr);
+
 HRESULT STDMETHODCALLTYPE FactoryQueryInterface(LPVOID, REFIID, LPVOID*);
 HRESULT STDMETHODCALLTYPE FactoryAddRef(LPVOID);
 HRESULT STDMETHODCALLTYPE FactoryRelease(LPVOID);
@@ -28,7 +33,7 @@ static const IClassFactoryVtbl IClassFactory_Vtbl = {
 	FactoryLockServer,
 };
 static IClassFactory classFactory;
-static const IExampleVtbl IExample_Vtbl = { QueryInterface,AddRef,Release,SetString,GetString };
+static const IExampleVtbl IExample_Vtbl = { QueryInterface,AddRef,Release,GetTypeInfoCount,GetTypeInfo,GetIDsOfNames,Invoke,SetString,GetString };
 static DWORD OutstandingObjects;
 static DWORD LockCount;
 
@@ -53,7 +58,7 @@ HRESULT STDMETHODCALLTYPE SetString(LPVOID this, BSTR str) {
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE GetString(LPVOID this, BSTR strPtr) {
+HRESULT STDMETHODCALLTYPE GetString(LPVOID this, BSTR* strPtr) {
 	if (!strPtr)
 		return E_POINTER;
 	
@@ -65,7 +70,8 @@ HRESULT STDMETHODCALLTYPE GetString(LPVOID this, BSTR strPtr) {
 }
 
 HRESULT STDMETHODCALLTYPE QueryInterface(LPVOID this, REFIID riid, LPVOID* ppv) {
-	if (!(IsEqualCLSID(&IID_IUnknown, riid) || IsEqualCLSID(&IID_IExample, riid))) {
+	// 这里之前忘了加IID_IDispatch的判断了，坑死我了，vbs脚本一直报错
+	if (!(IsEqualCLSID(&IID_IUnknown, riid) || IsEqualCLSID(&IID_IExample, riid) || IsEqualCLSID(&IID_IDispatch, riid))) {
 		*ppv = 0;
 		return E_NOINTERFACE;
 	}
@@ -96,9 +102,9 @@ HRESULT loadTypeInfo() {
 	LPTYPELIB pTypeLib;
 
 	// 调用系统API来加载TypeLib，该函数会增加typelib的引用计数，获取到一个TypeLib对象
-	if (!(hr = LoadRegTypeLib(&CLSID_TypeLib, 1, 0, 0,&pTypeLib))) {
+	if (SUCCEEDED(hr = LoadRegTypeLib(&CLSID_TypeLib, 1, 0, 0,&pTypeLib))) {
 		// 将IID_IExample，即IExample的vtable信息加载到gTypeInfo中
-		if (!(hr = pTypeLib->lpVtbl->GetTypeInfoOfGuid(pTypeLib, &IID_IExample, &gTypeInfo))) {
+		if (SUCCEEDED(hr = pTypeLib->lpVtbl->GetTypeInfoOfGuid(pTypeLib, &IID_IExample, &gTypeInfo))) {
 			// 我们获取pTypeLib的主要目的就是调用它的GetTypeInfoOfGuid函数，现在这个函数已经完成了他的使命
 			// 那么pTypeLib指针也就没用了
 			pTypeLib->lpVtbl->Release(pTypeLib);
@@ -132,7 +138,7 @@ HRESULT STDMETHODCALLTYPE GetTypeInfo(LPVOID this, UINT iTInfo, LCID lcid, IType
 		hr = loadTypeInfo();
 	}
 
-	if (!hr)
+	if (SUCCEEDED(hr))
 		*ppTInfo = gTypeInfo;
 
 	return hr;
@@ -142,7 +148,7 @@ HRESULT STDMETHODCALLTYPE GetIDsOfNames(LPVOID this, REFIID riid, LPOLESTR* rgsz
 	HRESULT hr;
 	if (!gTypeInfo) {
 		// 加载TypeLib
-		if ((hr = loadTypeInfo()))
+		if (FAILED(hr = loadTypeInfo()))
 			// 不为0，说明发生了错误
 			return hr;
 	}
@@ -241,7 +247,7 @@ HRESULT STDMETHODCALLTYPE FactoryCreateInstance(LPVOID this, LPVOID pUnkOuter, R
 	}
 	else {
 		// 初始化成员变量
-		((IExamplePtrForDll)this)->string = 0;
+		example->string = 0;
 		example->lpVtbl = &IExample_Vtbl;
 		example->lpVtbl->AddRef(example);
 		hr = example->lpVtbl->QueryInterface(example, riid, ppv);
@@ -280,7 +286,7 @@ HRESULT PASCAL DllCanUnloadNow(void) {
 BOOL WINAPI DllMain(HINSTANCE instance, DWORD fdwReason, LPVOID lpvReserved) {
 	switch (fdwReason) {
 	case DLL_PROCESS_ATTACH: {
-		// MessageBoxA(NULL, "hold on for windbg", "debug", MB_OK);
+		MessageBoxA(NULL, "hold on for windbg", "debug", MB_OK);
 		OutstandingObjects = LockCount = 0;
 		classFactory.lpVtbl = &IClassFactory_Vtbl;
 

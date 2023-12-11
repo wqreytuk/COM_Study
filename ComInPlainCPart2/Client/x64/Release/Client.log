@@ -1,12 +1,7 @@
 ﻿  Client.c
-C:\Users\x\source\repos\ComInPlainCPart1\Client\Client.c(13,18): warning C4133: 'function': incompatible types - from 'char [24]' to 'LPCWSTR'
-C:\Users\x\source\repos\ComInPlainCPart1\Client\Client.c(13,45): warning C4133: 'function': incompatible types - from 'char [23]' to 'LPCWSTR'
-C:\Users\x\source\repos\ComInPlainCPart1\Client\Client.c(19,19): warning C4133: 'function': incompatible types - from 'char [19]' to 'LPCWSTR'
-C:\Users\x\source\repos\ComInPlainCPart1\Client\Client.c(19,41): warning C4133: 'function': incompatible types - from 'char [21]' to 'LPCWSTR'
-C:\Users\x\source\repos\ComInPlainCPart1\Client\Client.c(34,17): warning C4133: 'function': incompatible types - from 'char [21]' to 'LPCWSTR'
-C:\Users\x\source\repos\ComInPlainCPart1\Client\Client.c(34,41): warning C4133: 'function': incompatible types - from 'char [19]' to 'LPCWSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(43,11): warning C4047: 'initializing': 'BSTR *' differs in levels of indirection from 'int *'
   Generating code
-  Previous IOBJ not found, fall back to full compilation.
+  Previous IPDB not found, fall back to full compilation.
   All 4 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-  Client.vcxproj -> C:\Users\x\source\repos\ComInPlainCPart1\x64\Release\Client.exe
+  Client.vcxproj -> C:\Users\x\COM_Study\ComInPlainCPart2\x64\Release\Client.exe

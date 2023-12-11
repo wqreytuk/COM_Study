@@ -1,6 +1,6 @@
 ﻿#include<windows.h>
 #include<stdio.h>
-#include "../ComInPlainCPart1/IExample.h"
+#include "../ComInPlainCPart2/IExample.h"
 
 VOID OutputHrMessage(HRESULT res) {
 	void* pMsg;
@@ -20,7 +20,7 @@ int main() {
 		hr = CoGetClassObject(&CLSID_IExample, CLSCTX_INPROC_SERVER, 0, &IID_IClassFactory, (LPVOID*)&classFactory);
 		 
 		if (FAILED(hr)) {
-			MessageBox(0, "Can't get IClassFactory", "CoGetClassObject error", MB_OK | MB_ICONEXCLAMATION);
+			MessageBox(0, L"Can't get IClassFactory", L"CoGetClassObject error", MB_OK | MB_ICONEXCLAMATION);
 		}
 		else {
 			IExample* example;
@@ -28,24 +28,31 @@ int main() {
 			// 现在已经用不到factoryClass，释放掉即可
 			classFactory->lpVtbl->Release(classFactory);
 			if (FAILED(hr)) {
-				MessageBox(0, "Can't get IExample", "CreateInstance error", MB_OK | MB_ICONEXCLAMATION);
+				MessageBox(0, L"Can't get IExample", L"CreateInstance error", MB_OK | MB_ICONEXCLAMATION);
 			}
 			else {
-				char buffer[80];
+				// 参数类型需要进行修改
+				BSTR strPtr;
+				char inputString[] = "this is test text!";
+
+				strPtr = SysAllocStringLen(0, lstrlenA(inputString));
+				MultiByteToWideChar(CP_ACP, 0, inputString, lstrlenA(inputString), strPtr, lstrlenA(inputString));
+
+				example->lpVtbl->SetString(example, strPtr);
+				DWORD64 whatEver = 0;
+				// 只要能装得下8bytes的地址就行
+				BSTR* outStr = &whatEver;
+				example->lpVtbl->GetString(example, outStr);
 				
-				example->lpVtbl->SetString(example, "this is test text!");
-				
-				example->lpVtbl->GetString(example, buffer, sizeof(buffer));
-				
-				printf("[buffer from COM object] %s\n", buffer);
+				wprintf(L"[buffer from COM object] %s\n", (WCHAR*)(*outStr));
 				example->lpVtbl->Release(example);
-				
+				SysFreeString(strPtr);
 			}
 		}
 		 CoUninitialize();
 		
 	}
 	else
-		MessageBox(0, "Can't initialize COM", "CoInitialize error", MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(0, L"Can't initialize COM", L"CoInitialize error", MB_OK | MB_ICONEXCLAMATION);
 	return 0;
 }

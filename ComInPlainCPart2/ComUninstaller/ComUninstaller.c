@@ -1,4 +1,4 @@
-// Unregisters the IExample.DLL COM component.
+﻿// Unregisters the IExample.DLL COM component.
 
 #include <windows.h>
 #include <tchar.h>
@@ -13,6 +13,7 @@ static const TCHAR	FileDlgTitle[] = _T("Locate IExample.dll to de-register it");
 static const TCHAR	FileDlgExt[] = _T("DLL files\000*.dll\000\000");
 static const TCHAR	ClassKeyName[] = _T("Software\\Classes");
 static const TCHAR	CLSID_Str[] = _T("CLSID");
+static const TCHAR	OurProgID[] = _T("IExample.object");
 static const TCHAR	InprocServer32Name[] = _T("InprocServer32");
 static const TCHAR	ProgIDName[] = L"ProgID";
 static const TCHAR	GUID_Format[] = _T("{%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}");
@@ -65,7 +66,14 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 
 				RegCloseKey(hKey);
 			}
+			// 删除OurProgID
+			if (!RegOpenKeyEx(rootKey, OurProgID, 0, KEY_ALL_ACCESS, &hKey))
+			{
+				RegDeleteKey(hKey, CLSID_Str);
+				RegDeleteKey(rootKey, OurProgID);
 
+				RegCloseKey(hKey);
+			}
 			RegCloseKey(rootKey);
 		}
 

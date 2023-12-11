@@ -1,2 +1,34 @@
-﻿MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+﻿  64 bit Processing .\IExample.idl
+  IExample.idl
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\oaidl.idl
+  oaidl.idl
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\objidl.idl
+  objidl.idl
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\unknwn.idl
+  unknwn.idl
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\wtypes.idl
+  wtypes.idl
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\wtypesbase.idl
+  wtypesbase.idl
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\basetsd.h
+  basetsd.h
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\guiddef.h
+  guiddef.h
+  64 bit Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\oaidl.acf
+  oaidl.acf
+  IExample.c
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(228,52): warning C4142: 'FactoryAddRef': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(19,27):
+  see declaration of 'FactoryAddRef'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(232,53): warning C4142: 'FactoryRelease': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(20,27):
+  see declaration of 'FactoryRelease'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(250,35): warning C4090: '=': different 'const' qualifiers
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(251,27): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(252,40): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(254,28): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\ComInPlainCPart2\IExample.c(290,44): warning C4090: '=': different 'const' qualifiers
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
 C:\Users\x\COM_Study\ComInPlainCPart2\x64\Debug\ComInPlainCPart2.exe : fatal error LNK1120: 1 unresolved externals

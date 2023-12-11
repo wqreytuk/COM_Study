@@ -1,2 +1,3 @@
 ﻿  ComUninstaller.c
-  ComUninstaller.vcxproj -> C:\Users\x\source\repos\ComInPlainCPart1\x64\Debug\ComUninstaller.exe
+C:\Users\x\COM_Study\ComInPlainCPart2\ComUninstaller\ComUninstaller.c(17,35): error C2053: 'ProgIDName': wide string mismatch
+C:\Users\x\COM_Study\ComInPlainCPart2\ComUninstaller\ComUninstaller.c(74,17): warning C4133: 'function': incompatible types - from 'unsigned short [47]' to 'LPCSTR'

@@ -8,17 +8,17 @@ library IExample {
 	[uuid(75ADDF86-4362-45FC-A990-4335C7E45FAA), dual, oleautomation, hidden, nonextensible]
 	// 可以看到在下面的定义中，我们并没有像IExample.h中定义的那样把IUnknown的3个函数和IDsipatch的4个函数都列出来
 	// 主要是因为MIDL会自动给我们加上去，因为我们前面已经导入了STDOLE2.TLB文件
-	interface IExampleVtbl: IDispatch {
+	interface IExampleVtbl : IDispatch {
 		// id不能为0
 		// 通过下面这种方式，vbs可以直接以myObj.string的方式获取string成员变量的值
 		// 以myObj.string = "test string"的方式设置string成员变量的值
 		// 此时这两个函数需要拥有相同的ID，脚本引擎会负责将其转换为对GetString和SetString的调用
 		[helpstring("set string")]
-		[id(1),propput] HRESULT string([in] BSTR);
+		[id(1), propput] HRESULT string([in] BSTR);
 
 		[helpstring("get string")]
-		[id(1),propget] HRESULT string([out, retval]BSTR*);
-	}
+		[id(1), propget] HRESULT string([out, retval]BSTR*);
+	};
 
 	// 定义IExample
 	// appobject表示我们的IExample对象可以通过CoGetClassObject函数来获取到
