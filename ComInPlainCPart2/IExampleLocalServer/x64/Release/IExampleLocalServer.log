@@ -1,0 +1,19 @@
+﻿  IExampleLocalServer.c
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(242,52): warning C4142: 'FactoryAddRef': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(19,27):
+  see declaration of 'FactoryAddRef'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(246,53): warning C4142: 'FactoryRelease': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(20,27):
+  see declaration of 'FactoryRelease'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(267,35): warning C4090: '=': different 'const' qualifiers
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(268,27): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(269,40): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(271,28): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(297,43): warning C4090: '=': different 'const' qualifiers
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 17 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  IExampleLocalServer.vcxproj -> C:\Users\x\COM_Study\ComInPlainCPart2\x64\Release\IExampleLocalServer.exe

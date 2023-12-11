@@ -6,6 +6,7 @@
 #include "../ComInPlainCPart2/IExample.h"
 
 
+BOOL installTypeExe = FALSE;
 
 static const TCHAR	OurDllName[] = _T("IExample.dll");
 static const TCHAR	ObjectDescription[] = _T("IExample COM component");
@@ -14,8 +15,9 @@ static const TCHAR	FileDlgExt[] = _T("DLL files\000*.dll\000\000");
 static const TCHAR	ClassKeyName[] = _T("Software\\Classes");
 static const TCHAR	CLSID_Str[] = _T("CLSID");
 static const TCHAR	OurProgID[] = _T("IExample.object");
-static const TCHAR	InprocServer32Name[] = _T("InprocServer32");
-static const TCHAR	ProgIDName[] = L"ProgID";
+static const TCHAR	InprocServer32Name[] = _T("InprocServer32"); 
+static const TCHAR	LocalServer32Name[] = _T("LocalServer32"); 
+static const TCHAR	ProgIDName[] = _T("ProgID");
 static const TCHAR	GUID_Format[] = _T("{%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}");
 
 
@@ -40,8 +42,11 @@ static void stringFromCLSID(LPTSTR buffer, IID ri)
  * Program Entry point
  */
 
-int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, int nCmdShow)
-{
+int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, int nCmdShow) {
+	if (lstrlenA(lpszCmdLine) > 0) {
+		// 说明要安装的是一个EXE
+		installTypeExe = TRUE;
+	}
 		HKEY		rootKey;
 		HKEY		hKey;
 		HKEY		hKey2;
@@ -57,7 +62,7 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 			{
 				if (!RegOpenKeyEx(hKey, buffer, 0, KEY_ALL_ACCESS, &hKey2))
 				{
-					RegDeleteKey(hKey2, InprocServer32Name);
+					RegDeleteKey(hKey2, installTypeExe ? LocalServer32Name : InprocServer32Name);
 					RegDeleteKey(hKey2, ProgIDName);
 					
 					RegCloseKey(hKey2);

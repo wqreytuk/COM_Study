@@ -1,0 +1,23 @@
+﻿  IExampleLocalServer.c
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(242,52): warning C4142: 'FactoryAddRef': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(19,27):
+  see declaration of 'FactoryAddRef'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(246,53): warning C4142: 'FactoryRelease': benign redefinition of type
+  C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(20,27):
+  see declaration of 'FactoryRelease'
+  
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(267,35): warning C4090: '=': different 'const' qualifiers
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(268,27): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(269,40): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(271,28): warning C4133: 'function': incompatible types - from 'IExamplePtrForDll' to 'IExample *'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(293,19): warning C4133: 'function': incompatible types - from 'char [32]' to 'LPCWSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(293,54): warning C4133: 'function': incompatible types - from 'char [19]' to 'LPCWSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(300,20): warning C4133: 'function': incompatible types - from 'char [47]' to 'LPCWSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(300,70): warning C4133: 'function': incompatible types - from 'char [19]' to 'LPCWSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(304,47): warning C4133: 'function': incompatible types - from 'IClassFactory *' to 'LPUNKNOWN'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(308,21): warning C4133: 'function': incompatible types - from 'char [24]' to 'LPCTSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(326,19): warning C4133: 'function': incompatible types - from 'char [22]' to 'LPCWSTR'
+C:\Users\x\COM_Study\ComInPlainCPart2\IExampleLocalServer\IExampleLocalServer.c(326,44): warning C4133: 'function': incompatible types - from 'char [19]' to 'LPCWSTR'
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Users\x\COM_Study\ComInPlainCPart2\x64\Debug\IExampleLocalServer.exe : fatal error LNK1120: 1 unresolved externals

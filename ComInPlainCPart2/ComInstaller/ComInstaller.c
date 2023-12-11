@@ -5,18 +5,22 @@
 #include <initguid.h>
 #include "../ComInPlainCPart2/IExample.h"
 
+BOOL installTypeExe = FALSE;
 
 // These first 3 strings will change if you create your own object
 static const TCHAR	OurDllName[] = _T("IExample.dll");
+static const TCHAR	OurExeName[] = _T("IExampleLocalServer.exe");
 static const TCHAR	TypeLibName[] = _T("IExample.tlb");
 static const TCHAR	OurProgID[] = _T("IExample.object");
 static const TCHAR	ObjectDescription[] = _T("IExample COM component");
 static const TCHAR	FileDlgTitle[] = _T("Locate IExample.dll to register it");
 
 static const TCHAR	FileDlgExt[] = _T("DLL files\\000*.dll\\000\\000");
+static const TCHAR	FileDlgExtForExe[] = _T("EXE files\\000*.exe\\000\\000");
 static const TCHAR	ClassKeyName[] = _T("Software\\Classes");
 static const TCHAR	CLSID_Str[] = _T("CLSID");
 static const TCHAR	InprocServer32Name[] = _T("InprocServer32");
+static const TCHAR	LocalServer32Name[] = _T("LocalServer32");
 static const TCHAR	ProgIDName[] = L"ProgID";
 static const TCHAR	ThreadingModel[] = _T("ThreadingModel");
 static const TCHAR	BothStr[] = _T("both");
@@ -62,7 +66,7 @@ static void cleanup(void)
 		{
 			if (!RegOpenKeyEx(hKey, buffer, 0, KEY_ALL_ACCESS, &hKey2))
 			{
-				RegDeleteKey(hKey2, InprocServer32Name);
+				RegDeleteKey(hKey2, installTypeExe ? LocalServer32Name : InprocServer32Name);
 
 				RegDeleteKey(hKey2, ProgIDName);
 
@@ -97,8 +101,13 @@ static void cleanup(void)
  * Program Entry point
  */
 
-int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, int nCmdShow)
-{
+int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, int nCmdShow) {
+	if (lstrlenA(lpszCmdLine) > 0) {
+		// 说明要安装的是一个EXE
+		installTypeExe = TRUE;
+	}
+
+
 	int				result;
 	TCHAR			filename[MAX_PATH];
 
@@ -107,10 +116,10 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 
 		// Pick out where our DLL is located. We need to know its location in
 		// order to register it as a COM component
-		lstrcpy(filename, OurDllName);
+		lstrcpy(filename, installTypeExe ? OurExeName : OurDllName);
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.lpstrFilter = FileDlgExt;
+		ofn.lpstrFilter = installTypeExe ? FileDlgExtForExe : FileDlgExt;
 		ofn.lpstrFile = filename;
 		ofn.nMaxFile = MAX_PATH;
 		ofn.lpstrTitle = FileDlgTitle;
@@ -158,7 +167,7 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 					RegSetValueEx(hKey2, 0, 0, REG_SZ, (const BYTE*)ObjectDescription, sizeof(ObjectDescription));
 
 					// 创建subkey InprocServer32
-					if (!RegCreateKeyEx(hKey2, InprocServer32Name, 0, 0, REG_OPTION_NON_VOLATILE, KEY_WRITE, 0, &hkExtra, &disposition))
+					if (!RegCreateKeyEx(hKey2, installTypeExe ?  LocalServer32Name: InprocServer32Name, 0, 0, REG_OPTION_NON_VOLATILE, KEY_WRITE, 0, &hkExtra, &disposition))
 					{
 						// 设置InprocServer32的值(default)，即dll的路劲
 						// Unicode两倍字节数

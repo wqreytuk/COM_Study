@@ -21,8 +21,8 @@ HRESULT STDMETHODCALLTYPE FactoryRelease(LPVOID);
 HRESULT STDMETHODCALLTYPE FactoryCreateInstance(LPVOID, LPVOID, REFIID, LPVOID*);
 HRESULT STDMETHODCALLTYPE FactoryLockServer(LPVOID, BOOL);
 
-HRESULT STDMETHODCALLTYPE SetString(LPVOID,BSTR);
-HRESULT STDMETHODCALLTYPE GetString(LPVOID,BSTR*);
+HRESULT STDMETHODCALLTYPE SetString(LPVOID, BSTR);
+HRESULT STDMETHODCALLTYPE GetString(LPVOID, BSTR*);
 
 
 static const IClassFactoryVtbl IClassFactory_Vtbl = {
@@ -61,7 +61,7 @@ HRESULT STDMETHODCALLTYPE SetString(LPVOID this, BSTR str) {
 HRESULT STDMETHODCALLTYPE GetString(LPVOID this, BSTR* strPtr) {
 	if (!strPtr)
 		return E_POINTER;
-	
+
 
 	if (!(*strPtr = SysAllocStringLen(((IExamplePtrForDll)this)->string, SysStringLen(((IExamplePtrForDll)this)->string))))
 		return TBSIMP_E_OUT_OF_MEMORY;
@@ -102,7 +102,7 @@ HRESULT loadTypeInfo() {
 	LPTYPELIB pTypeLib;
 
 	// 调用系统API来加载TypeLib，该函数会增加typelib的引用计数，获取到一个TypeLib对象
-	if (SUCCEEDED(hr = LoadRegTypeLib(&CLSID_TypeLib, 1, 0, 0,&pTypeLib))) {
+	if (SUCCEEDED(hr = LoadRegTypeLib(&CLSID_TypeLib, 1, 0, 0, &pTypeLib))) {
 		// 将IID_IExample，即IExample的vtable信息加载到gTypeInfo中
 		if (SUCCEEDED(hr = pTypeLib->lpVtbl->GetTypeInfoOfGuid(pTypeLib, &IID_IExample, &gTypeInfo))) {
 			// 我们获取pTypeLib的主要目的就是调用它的GetTypeInfoOfGuid函数，现在这个函数已经完成了他的使命
@@ -167,18 +167,18 @@ HRESULT STDMETHODCALLTYPE Invoke(LPVOID this, DISPID dispIdMember, REFIID riid, 
 		hr = S_OK;
 		break;
 	}
-		  // SetString	
+		  // SetString
 	case 2: {
 		// 对参数类型进行判断
 		if (pDispParams->rgvarg->vt != VT_BSTR) {
 			// 判断对方传进来的是不是一个DWORD类型，如果是的话，就给他转换成字符串
-		
+
 			// // WORD最长也就32，加上terminating 0，就是33
 			// WCHAR temp[33];
 			// wsprintfW(temp, L"%d", pDispParams->rgvarg->lVal);
 			// // 然后赋值给bstr成员
 			// pDispParams->rgvarg->pbstrVal = SysAllocStringLen(temp, SysStringLen(temp));
-		
+
 
 			// windows提供了类型转换API，所以上面的代码可以用一个API来完成
 			if ((hr = VariantChangeType(pDispParams->rgvarg, pDispParams->rgvarg, 0, VT_BSTR))) {
