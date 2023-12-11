@@ -1,0 +1,6 @@
+﻿  ComUninstaller.c
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 2 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  ComUninstaller.vcxproj -> C:\Users\x\COM_Study\ComInPlainCPart2\x64\Release\ComUninstaller.exe

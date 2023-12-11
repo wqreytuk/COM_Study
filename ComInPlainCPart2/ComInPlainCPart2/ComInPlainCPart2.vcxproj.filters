@@ -18,6 +18,7 @@
     <None Include="export.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="clientTest.vbs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IExample.c">
@@ -28,5 +29,10 @@
     <ClInclude Include="IExample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="IExample.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
   </ItemGroup>
 </Project>

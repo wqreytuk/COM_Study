@@ -2,6 +2,9 @@
 #include<objbase.h>
 #include "IExample.h"
 
+// Global variable area
+ITypeInfo* gTypeInfo;
+
 
 HRESULT STDMETHODCALLTYPE QueryInterface(LPVOID, REFIID, LPVOID*);
 HRESULT STDMETHODCALLTYPE AddRef(LPVOID);
@@ -13,10 +16,8 @@ HRESULT STDMETHODCALLTYPE FactoryRelease(LPVOID);
 HRESULT STDMETHODCALLTYPE FactoryCreateInstance(LPVOID, LPVOID, REFIID, LPVOID*);
 HRESULT STDMETHODCALLTYPE FactoryLockServer(LPVOID, BOOL);
 
-
-
-HRESULT STDMETHODCALLTYPE SetString(LPVOID, BSTR);
-HRESULT STDMETHODCALLTYPE GetString(LPVOID, BSTR*);
+HRESULT STDMETHODCALLTYPE SetString(LPVOID,BSTR);
+HRESULT STDMETHODCALLTYPE GetString(LPVOID,BSTR*);
 
 
 static const IClassFactoryVtbl IClassFactory_Vtbl = {
@@ -90,6 +91,124 @@ HRESULT STDMETHODCALLTYPE Release(LPVOID this) {
 	return ((IExamplePtrForDll)this)->count;
 }
 
+HRESULT loadTypeInfo() {
+	HRESULT hr;
+	LPTYPELIB pTypeLib;
+
+	// 调用系统API来加载TypeLib，该函数会增加typelib的引用计数，获取到一个TypeLib对象
+	if (!(hr = LoadRegTypeLib(&CLSID_TypeLib, 1, 0, 0,&pTypeLib))) {
+		// 将IID_IExample，即IExample的vtable信息加载到gTypeInfo中
+		if (!(hr = pTypeLib->lpVtbl->GetTypeInfoOfGuid(pTypeLib, &IID_IExample, &gTypeInfo))) {
+			// 我们获取pTypeLib的主要目的就是调用它的GetTypeInfoOfGuid函数，现在这个函数已经完成了他的使命
+			// 那么pTypeLib指针也就没用了
+			pTypeLib->lpVtbl->Release(pTypeLib);
+			// 需要增加gTypeInfo的引用计数
+			gTypeInfo->lpVtbl->AddRef(gTypeInfo);
+		}
+	}
+
+	return hr;
+}
+
+// 实现IDispatch的4个函数
+HRESULT STDMETHODCALLTYPE GetTypeInfoCount(LPVOID this, UINT* pCount) {
+	// 有typelib就填充1，没有就填充0
+	*pCount = 1;
+	return S_OK;
+}
+HRESULT STDMETHODCALLTYPE GetTypeInfo(LPVOID this, UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo) {
+	HRESULT hr;
+	*ppTInfo = 0;
+
+	// 这个参数值应该是0，因为我们并不打算使用这个参数
+	if (iTInfo) hr = ResultFromScode(DISP_E_BADINDEX);
+
+	if (gTypeInfo) {
+		gTypeInfo->lpVtbl->AddRef(gTypeInfo);
+		hr = S_OK;
+	}
+	else {
+		// 加载TypeLib
+		hr = loadTypeInfo();
+	}
+
+	if (!hr)
+		*ppTInfo = gTypeInfo;
+
+	return hr;
+}
+
+HRESULT STDMETHODCALLTYPE GetIDsOfNames(LPVOID this, REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId) {
+	HRESULT hr;
+	if (!gTypeInfo) {
+		// 加载TypeLib
+		if ((hr = loadTypeInfo()))
+			// 不为0，说明发生了错误
+			return hr;
+	}
+	// 调用系统函数来进行实现
+	hr = DispGetIDsOfNames(gTypeInfo, rgszNames, cNames, rgDispId);
+	return hr;
+}
+
+// Invoke函数会被脚本引擎间接调用，通过传入dispatchID来调用我们在IExample中实现的GetString和SetString函数
+HRESULT STDMETHODCALLTYPE Invoke(LPVOID this, DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult, EXCEPINFO* pExcepInfo, UINT* puArgErr) {
+	/*
+	HRESULT hr;
+	switch (dispIdMember) {
+		// GetString
+	case 1: {
+		hr = S_OK;
+		break;
+	}
+		  // SetString	
+	case 2: {
+		// 对参数类型进行判断
+		if (pDispParams->rgvarg->vt != VT_BSTR) {
+			// 判断对方传进来的是不是一个DWORD类型，如果是的话，就给他转换成字符串
+		
+			// // WORD最长也就32，加上terminating 0，就是33
+			// WCHAR temp[33];
+			// wsprintfW(temp, L"%d", pDispParams->rgvarg->lVal);
+			// // 然后赋值给bstr成员
+			// pDispParams->rgvarg->pbstrVal = SysAllocStringLen(temp, SysStringLen(temp));
+		
+
+			// windows提供了类型转换API，所以上面的代码可以用一个API来完成
+			if ((hr = VariantChangeType(pDispParams->rgvarg, pDispParams->rgvarg, 0, VT_BSTR))) {
+				hr = ((IExamplePtrForDll)this)->lpVtbl->SetString(this, pDispParams->rgvarg->pbstrVal);
+			}
+		}
+		else {
+			hr = ResultFromScode(DISP_E_TYPEMISMATCH);
+		}
+	}
+
+	default:
+		break;
+	}
+	return hr;
+	*/
+
+	// 更好的做法是使用OLE32.dll提供的DispInvoke函数来替我们完成工作，就像GetIDsOfNames中的做法一样
+	// 我们只需要确保TypeLib已经被正确加载
+	if (!IsEqualIID(riid, &IID_NULL)) {
+		// 根据微软官方文档 https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-idispatch-getidsofnames
+		// Reserved for future use. Must be IID_NULL.
+		return ResultFromScode(DISP_E_UNKNOWNINTERFACE);
+	}
+
+	HRESULT hr;
+	if (!gTypeInfo) {
+		// 加载TypeLib
+		if ((hr = loadTypeInfo()))
+			// 不为0，说明发生了错误
+			return hr;
+	}
+	// 调用系统函数来进行实现
+	hr = DispInvoke(this, gTypeInfo, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+	return hr;
+}
 
 
 HRESULT STDMETHODCALLTYPE FactoryQueryInterface(LPVOID this, REFIID riid, LPVOID* ppv) {
