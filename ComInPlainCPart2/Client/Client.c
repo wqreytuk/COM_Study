@@ -17,7 +17,7 @@ int main() {
 	HRESULT hr = CoInitialize(NULL);
 	if (SUCCEEDED(hr)) {
 		IClassFactory* classFactory;
-		hr = CoGetClassObject(&CLSID_IExample, CLSCTX_INPROC_SERVER, 0, &IID_IClassFactory, (LPVOID*)&classFactory);
+		hr = CoGetClassObject(&CLSID_IExample, CLSCTX_LOCAL_SERVER, 0, &IID_IClassFactory, (LPVOID*)&classFactory);
 		 
 		if (FAILED(hr)) {
 			MessageBox(0, L"Can't get IClassFactory", L"CoGetClassObject error", MB_OK | MB_ICONEXCLAMATION);

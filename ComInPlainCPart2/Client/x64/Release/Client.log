@@ -1,5 +1,5 @@
 ﻿  Client.c
-C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(43,11): warning C4047: 'initializing': 'BSTR *' differs in levels of indirection from 'int *'
+C:\Users\x\COM_Study\ComInPlainCPart2\Client\Client.c(44,11): warning C4047: 'initializing': 'BSTR *' differs in levels of indirection from 'DWORD64 *'
   Generating code
   Previous IPDB not found, fall back to full compilation.
   All 4 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.

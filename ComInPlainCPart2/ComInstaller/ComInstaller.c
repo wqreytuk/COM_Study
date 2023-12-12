@@ -199,7 +199,7 @@ int WINAPI WinMain(HINSTANCE hinstExe, HINSTANCE hinstPrev, LPSTR lpszCmdLine, i
 			RegCloseKey(rootKey);
 		}
 
-
+		MessageBoxA(NULL, "hold", "hold", MB_OK);
 		// 注册TypeLib，默认tlb文件和dll文件位于同一目录
 		if (!result) {
 			ITypeLib* pTypeLib;
